@@ -25,11 +25,11 @@ stepData <- ddply(activityData_NoNA,.(date), numcolwise(sum))
 ```
 
 ###What is mean total number of steps taken per day?
-Make a histogram of the total number of steps taken each day - Exclude NAs 
+Make a histogram of the total number of steps taken each day - Exclude NAs
 
 ```{r}
 library(ggplot2)
-plot_date <- ggplot(stepData, aes(steps))     
+plot_date <- ggplot(stepData, aes(steps))
 plot_date + geom_histogram(binwidth = 2800) + labs(title = "Total Steps for Each Day - No NAs")
 ```
 
@@ -54,14 +54,14 @@ mean_intervalData <- aggregate(steps ~ interval, intervalData, FUN = "mean")
 summary(mean_intervalData)
 ```
 
-Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all days 
+Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all days
 
 ```{r}
 mean_intervalData$interval <- as.numeric(mean_intervalData$interval)
 ```
 
 ``````{r}
-plot_interval <- ggplot(mean_intervalData, aes(interval, steps))     
+plot_interval <- ggplot(mean_intervalData, aes(interval, steps))
 plot_interval + geom_line() + labs(title = "Average Steps for each 5-Minute Inteval")
 ```
 
@@ -86,11 +86,11 @@ nrow(activityData_NAs)
 Fill in missing steps for NAs - set equal to mean total number of steps taken per day (broken into 5-minute interval)
 
 ```{r}
-mean_intervalData$interval <- factor(mean_intervalData$interval) 
+mean_intervalData$interval <- factor(mean_intervalData$interval)
 
-activityData_NAs$interval <- factor(activityData_NAs$interval) 
+activityData_NAs$interval <- factor(activityData_NAs$interval)
 
-activityData_NAs[, "steps"]  <-  
+activityData_NAs[, "steps"] <-
         mean_intervalData[activityData_NAs[, "interval"], "steps"]
 ```
 
@@ -105,7 +105,7 @@ stepData_total <- ddply(activityData_total,.(date), numcolwise(sum))
 Make a histogram of the total number of steps taken each day - total dataset
 
 ```{r}
-plot_totaldata <- ggplot(stepData_total, aes(steps))     
+plot_totaldata <- ggplot(stepData_total, aes(steps))
 plot_totaldata + geom_histogram(binwidth = 2800) + labs(title = "Total Steps for Each Day - Total Dataset")
 ```
 
@@ -119,7 +119,7 @@ mean_total
 median_total
 ```
 
-The mean and median values do not differ from the estimates from the first part of the assignment.  There is no real impact of imputing missing data on the estimates of the total daily number of steps.
+The mean and median values do not differ from the estimates from the first part of the assignment. There is no real impact of imputing missing data on the estimates of the total daily number of steps.
 
 ###Are there differences in activity patterns between weekdays and weekends?
 
@@ -130,25 +130,26 @@ activityData_total$dayType <- weekdays(as.Date(factor(activityData_total$date), 
 
 for (i in 1:nrow(activityData_total)) {
      
-    if (activityData_total$dayType[i] %in% c("Saturday",      "Sunday")) { 
+    if (activityData_total$dayType[i] %in% c("Saturday", "Sunday")) {
            activityData_total$dayType2[i] <- "Weekend"
     }
     else {
         activityData_total$dayType2[i] <- "Weekday"
-    } 
+    }
 }
 
 activityData_total$dayType2 <- as.factor(activityData_total$dayType2)
 ```
 
-Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend days 
+Make a time series plot of the 5-minute interval and the average number of steps taken, averaged across all weekday days or weekend days
 
 ```{r}
 activityData_total$interval <- as.numeric(activityData_total$interval)
 
 mean_dayTypeData <- aggregate(steps ~ dayType2 + interval, activityData_total, FUN = "mean")
 
-plot_dayType <- ggplot(mean_dayTypeData, aes(x=interval, y=steps, group = dayType2, color = dayType2))     
+plot_dayType <- ggplot(mean_dayTypeData, aes(x=interval, y=steps, group = dayType2, color = dayType2))
 plot_dayType + geom_line() + facet_grid(dayType2 ~ .) + labs(title = "Average Steps for Each 5-minute Inteval by Weekend/Weekday")
 ```
+
 
